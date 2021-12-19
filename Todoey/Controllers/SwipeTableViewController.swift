@@ -2,13 +2,13 @@
 //  SwipeTableViewController.swift
 //  Todoey
 //
-//  Created by Philipp Muellauer on 29/11/2019.
-//  Copyright © 2019 Philipp Muellauer. All rights reserved.
+//  Created by 吳偉平 on 2021/12/5.
+//  Copyright © 2021 App Brewery. All rights reserved.
 //
 
 import UIKit
 import SwipeCellKit
-//import RealmSwift
+import RealmSwift
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
     
@@ -30,15 +30,16 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
+        //Swipe from right to left.
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             
             self.updateModel(at: indexPath)
             
+            
         }
-        
-        // customize the action appearance
         deleteAction.image = UIImage(named: "delete-icon")
+        //Customize the action appearance
         
         return [deleteAction]
     }

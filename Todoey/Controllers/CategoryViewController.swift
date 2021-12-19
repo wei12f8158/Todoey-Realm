@@ -2,8 +2,9 @@
 //  CategoryViewController.swift
 //  Todoey
 //
-//  Created by Philipp Muellauer on 28/11/2019.
-//  Copyright © 2019 Philipp Muellauer. All rights reserved.
+//  Created by 吳偉平 on 2021/12/5.
+//  Copyright © 2021 App Brewery. All rights reserved.
+//
 
 import UIKit
 import RealmSwift
@@ -12,9 +13,8 @@ import ChameleonFramework
 class CategoryViewController: SwipeTableViewController {
     
     let realm = try! Realm()
+    //Initiallize a new Realm.
     
-    // Potential namespace clash with OpaquePointer (same name of Category)
-    // Use correct type from dropdown or add backticks to fix e.g., var categories = [`Category`]()
     var categories: Results<Category>?
     
     override func viewDidLoad() {
@@ -30,15 +30,18 @@ class CategoryViewController: SwipeTableViewController {
         navBar.backgroundColor = UIColor(hexString: "#1D9BF6")
     }
     
-    //Mark: - Tableview Datasource Methods
+    //MARK: - Tableview Datasource Methods
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories?.count ?? 1
+        //If it nil, then return 1.
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
+        //If categories not nil, grab indexPath name.
         
         if let category = categories?[indexPath.row] {
             guard let categoryColour = UIColor(hexString: category.colour) else {fatalError()}
@@ -49,7 +52,8 @@ class CategoryViewController: SwipeTableViewController {
     }
     
     
-    //Mark: - Data Manipulation Methods
+    //MARK: - Data Manipulation Methods
+    
     func save(category: Category) {
         do {
             try realm.write {
@@ -64,10 +68,13 @@ class CategoryViewController: SwipeTableViewController {
     func loadCategories() {
         
         categories = realm.objects(Category.self)
+        //Pull out all of items.
+        
         tableView.reloadData()
     }
     
-    //Mark: - Delete Data from Swipe
+    //MARK: - Delete Data from Swipe
+    
     override func updateModel(at indexPath: IndexPath) {
         if let categoryForDeletion = self.categories?[indexPath.row] {
             do {
@@ -80,7 +87,8 @@ class CategoryViewController: SwipeTableViewController {
         }
     }
     
-    //Mark: - Add New Categories
+    //MARK: - Add New Categories
+    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         var textField = UITextField()
@@ -100,19 +108,19 @@ class CategoryViewController: SwipeTableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //Mark: - Tableview Delegate Methods
+    //MARK: - Tableview Delegate Methods
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "goToItems", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //Init Segue.
         let destinationVC = segue.destination as! TodoListViewController
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
-    
-    
     
 }
 

@@ -1,8 +1,9 @@
-//  ViewController.swift
+//
+//  TodoListViewController.swift
 //  Todoey
 //
-//  Created by Philipp Muellauer on 26/11/2019.
-//  Copyright © 2019 Philipp Muellauer. All rights reserved.
+//  Created by 吳偉平 on 2021/12/5.
+//  Copyright © 2021 App Brewery. All rights reserved.
 //
 
 import UIKit
@@ -15,6 +16,7 @@ class TodoListViewController: SwipeTableViewController {
     
     var toDoItems: Results<Item>?
     let realm = try! Realm()
+    
     var selectedCategory: Category? {
         didSet {
             loadItems()
@@ -33,30 +35,38 @@ class TodoListViewController: SwipeTableViewController {
             guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")
             }
             if let navBarColour = UIColor(hexString: colourHex) {
-                //Original setting: navBar.barTintColor = UIColor(hexString: colourHex)
-                //Revised for iOS13 w/ Prefer Large Titles setting:
+                
                 navBar.backgroundColor = navBarColour
                 navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+                //All of navigation items and bar buttons be contrast. returnFlat: Low contrast.
+                
                 searchBar.barTintColor = navBarColour
             }
         }
     }
     
-    //Mark - Tableview Datasource Methods
+    //MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return toDoItems?.count ?? 1
+        //If toDoItems not nil, return count, if nil, return 1.
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        //Creating reused prototype cell.
+        
         if let item = toDoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
+            //Value = Condition ? True : False.
+            
             if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(toDoItems!.count)) {
                 cell.backgroundColor = colour
                 cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
             }
             cell.accessoryType = item.done ? .checkmark : .none
+            //If it not mark, mark it, vice versa.
+            
         } else {
             cell.textLabel?.text = "No Items Added"
         }
@@ -64,13 +74,14 @@ class TodoListViewController: SwipeTableViewController {
         return cell
     }
     
-    //Mark - TableView Delegate Methods
+    //MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if let item = toDoItems?[indexPath.row] {
             do {
                 try realm.write{
                     // realm.delete(item)
+                    
                     item.done = !item.done
                 }
             } catch {
@@ -85,15 +96,25 @@ class TodoListViewController: SwipeTableViewController {
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         var textField = UITextField()
+        //Displays an editable text area in your interface.
+        
         let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        //Pop up New Todoey.
+        
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            //Creat button for Add Item.
+            
             if let currentCategory = self.selectedCategory {
                 do {
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
+                        //Pass user text to title.
+                        
                         newItem.dateCreated = Date()
+                        
                         currentCategory.items.append(newItem)
+                        //Append newItem to currentCategory.
                     }
                 } catch {
                     print("Error saving new items, \(error)")
@@ -102,14 +123,19 @@ class TodoListViewController: SwipeTableViewController {
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
+            //Creat space for typing.
+            
             alertTextField.placeholder = "Create new item"
             textField = alertTextField
         }
         alert.addAction(action)
+        //Execute alert
+        
         present(alert, animated: true, completion: nil)
+        //Presnet alert
     }
     
-    //Mark - Model Manipulation Methods
+    //MARK: - Model Manipulation Methods
     func loadItems() {
         toDoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
@@ -128,8 +154,7 @@ class TodoListViewController: SwipeTableViewController {
     }
 }
 
-
-//Mark: - Searchbar delegate methods
+//MARK: - Searchbar delegate methods
 extension TodoListViewController: UISearchBarDelegate{
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -140,8 +165,11 @@ extension TodoListViewController: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
+            //When user click X, back to original list.
+            
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
+                //Wait for arrow to appear and cursor to disappear.
             }
         }
     }

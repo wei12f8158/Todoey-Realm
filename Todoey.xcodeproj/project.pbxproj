@@ -100,8 +100,8 @@
 			isa = PBXGroup;
 			children = (
 				EB461DC0238FFFB50057DDEA /* CategoryViewController.swift */,
-				EBDD8EE72391471600262B65 /* SwipeTableViewController.swift */,
 				EB461D84238D63D70057DDEA /* TodoListViewController.swift */,
+				EBDD8EE72391471600262B65 /* SwipeTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -405,7 +405,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.philippmuellauer.Todoey;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.WEI.Todoey-Realm";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -425,7 +425,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.philippmuellauer.Todoey;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.WEI.Todoey-Realm";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
